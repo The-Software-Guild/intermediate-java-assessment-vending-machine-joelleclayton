@@ -4,15 +4,10 @@ import com.joelle.vendingmachine.dao.FileDao;
 import com.joelle.vendingmachine.dao.VendingMachineDaoImpl;
 import com.joelle.vendingmachine.dao.VendingMachineException;
 import com.joelle.vendingmachine.dto.Item;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
+
+import java.io.*;
 import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -22,16 +17,26 @@ import java.util.logging.Logger;
  */
 public class FileDaoImpl implements FileDao {
 
-    private static final String ITEM_FILE = "items.txt";
+
+
+    public final String ITEM_FILE = "items.txt";
     private static final String DELIMITER = ",";
 
-    private Map<String, Item> itemMap = new HashMap<>();
+    private List<Item> itemList = new ArrayList<>();
+
+
 
 
     @Override
     public Item unmarshallItem(String line) {
-        //implement
-        return null;
+        // file structure <name>,<price>, <quantity>
+
+        String[] itemTokens = line.split(DELIMITER);
+        String itemName = itemTokens[1];
+        BigDecimal itemCost = new BigDecimal(itemTokens[2]);
+        int itemQuantity = Integer.parseInt(itemTokens[2]);
+        Item itemFromFile = new Item(itemName, itemCost, itemQuantity);
+        return itemFromFile;
     }
 
     @Override
@@ -40,20 +45,45 @@ public class FileDaoImpl implements FileDao {
     }
 
     @Override
-    public void writeFile(List<Item> list) throws VendingMachineException {
+    public void writeFile(List<Item> itemList) throws VendingMachineException {
+        PrintWriter out;
+
         try {
-            //implement
+            out = new PrintWriter(new FileWriter(ITEM_FILE));
         } catch (IOException e) {
             throw new VendingMachineException("Could not save item data", e);
         }
+        String itemAsText;
+        for (Item currentItem: itemList) {
+            itemAsText = marshallItem(currentItem);
+            out.println(itemAsText);
+            out.flush();
+        }
+        out.close();
+
 
     }
 
     @Override
-    public Map<String, Item> readFile(String file) throws VendingMachineException {
+    public List<Item> readFile(String file) throws VendingMachineException {
+        Scanner scanner;
         try {
-            //implement
-            return itemMap;
+            scanner = new Scanner(
+                    new BufferedReader(
+                            new FileReader(ITEM_FILE)));
+
+            String currentLine;
+
+            Item currentItem;
+
+            while (scanner.hasNextLine()) {
+                currentLine = scanner.nextLine();
+                currentItem = unmarshallItem(currentLine);
+                itemList.add(currentItem);
+
+                scanner.close();
+            }
+            return itemList;
         } catch(FileNotFoundException e){
             throw new VendingMachineException("File not found", e);
         }

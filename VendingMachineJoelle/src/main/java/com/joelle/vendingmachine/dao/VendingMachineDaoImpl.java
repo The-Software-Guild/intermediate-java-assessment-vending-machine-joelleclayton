@@ -2,10 +2,14 @@ package com.joelle.vendingmachine.dao;
 
 import com.joelle.vendingmachine.dto.Item;
 
+import java.io.*;
+import java.math.BigDecimal;
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Scanner;
+import java.util.HashMap;
 
 /**
  *
@@ -13,48 +17,35 @@ import java.util.Map;
  */
 public class VendingMachineDaoImpl implements VendingMachineDao {
 
-    Map<String, Item> itemMap;
+    private List<Item> itemList = new ArrayList<>();
     FileDao fileDao;
     private static final String ITEM_FILE = "items.txt";
 
+    private static final String DELIMITER = ",";
+
     public VendingMachineDaoImpl() throws VendingMachineException {
         fileDao = new FileDaoImpl();
-        itemMap = fileDao.readFile(ITEM_FILE);
+        itemList = fileDao.readFile(ITEM_FILE);
     }
 
     @Override
-    public Item getItem(String name) throws VendingMachineException {
-        itemMap = fileDao.readFile(ITEM_FILE);
-        return itemMap.get(name);
+    public Item getItem(int index) throws VendingMachineException {
+        itemList = fileDao.readFile(ITEM_FILE);
+        return itemList.get(index);
     }
 
     @Override
     public List<Item> listAllItems() throws VendingMachineException {
-        itemMap = fileDao.readFile(ITEM_FILE);
-        return new ArrayList<>(itemMap.values());
+        itemList = fileDao.readFile(ITEM_FILE);
+        return itemList;
     }
 
     @Override
-    public Item addItem(Item item) throws VendingMachineException {
-        itemMap = fileDao.readFile(ITEM_FILE);
-        Item res = itemMap.put(item.getName(), item);
-        fileDao.writeFile(new ArrayList<Item>(itemMap.values()));
-        return res;
+    public void changeInventoryCount(int index, int newCount) throws VendingMachineException {
+        itemList = fileDao.readFile(ITEM_FILE);
+        itemList.get(index).setNumInventoryItems(newCount);
+        fileDao.writeFile(itemList);
+
     }
 
-    @Override
-    public Item removeItem(Item item) throws VendingMachineException {
-        itemMap = fileDao.readFile(ITEM_FILE);
-        Item res = itemMap.remove(item.getName());
-        fileDao.writeFile(new ArrayList<Item>(itemMap.values()));
-        return res;
-    }
-
-    @Override
-    public Item changeInventoryCount(Item item, int newCount) throws VendingMachineException {
-        item.setNumInventoryItems(newCount);
-        Item res = itemMap.put(item.getName(), item);
-        fileDao.writeFile(new ArrayList<Item>(itemMap.values()));
-        return res;
-    }
 }

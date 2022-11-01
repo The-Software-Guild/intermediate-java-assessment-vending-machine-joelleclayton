@@ -8,6 +8,7 @@ import java.util.Objects;
  * @author JoelleClayton
  */
 public class Item {
+
     private String name;
     private BigDecimal cost;
     private int numInventoryItems;

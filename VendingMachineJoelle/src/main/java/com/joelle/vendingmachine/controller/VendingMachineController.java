@@ -26,11 +26,11 @@ public class VendingMachineController {
     private VendingMachineService service;
 
     public VendingMachineController() throws VendingMachineException {
-        //implement
     }
 
     public VendingMachineController(VendingMachineView view, VendingMachineService service) {
-        //implement
+        this.view = view;
+        this.service = service;
     }
 
     public void run() {
@@ -49,7 +49,7 @@ public class VendingMachineController {
                         try {
                             balance = buyItems(balance);
                         } catch(VendingMachineItemInventoryException | VendingMachineInsufficientFundsException e) {
-                            view.displayBalance;
+                            view.displayBalance(balance);
                             view.displayErrorMessage(e.getMessage());
                         }
                         break;
@@ -74,12 +74,12 @@ public class VendingMachineController {
         }
 
         public BigDecimal addFunds(BigDecimal balance) {
-           //implement
+            // implement
             return null;
         }
 
         public BigDecimal buyItems(BigDecimal balance) throws VendingMachineException, VendingMachineItemInventoryException, VendingMachineInsufficientFundsException {
-            //implement
+            // implement
             return null;
         }
 

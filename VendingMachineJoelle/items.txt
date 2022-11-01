@@ -1,0 +1,11 @@
+1,Snickers,1.50,5
+2,Reese's,1.50,5
+3,Fritos,1.00,5
+4,Peanut M&Ms,1:50,5
+5,Doritos,1.00,5
+6,Bubble Gum,0.75,5
+7,Skittles,1.25,5
+8,Pop Tart,2.00,5
+9,Mountain Dew,2.75,5
+10,Honey Bun,2.00,5
+
